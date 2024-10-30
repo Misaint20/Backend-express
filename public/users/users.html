@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Lista de Usuarios</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1>Lista de Usuarios Registrados</h1>
+  <ul id="user-list"></ul>
+
+  <script>
+    // Fetch para obtener los usuarios desde la API
+    fetch('/api/users')
+      .then(response => response.json())
+      .then(users => {
+        const userList = document.getElementById('user-list');
+        users.forEach(user => {
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>Usuario:</strong> ${user.name} - <strong>Email:</strong> ${user.email}`;
+          userList.appendChild(li);
+        });
+      })
+      .catch(error => {
+        console.error('Error al obtener usuarios:', error);
+      });
+  </script>
+</body>
+</html>
