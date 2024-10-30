@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación - Express.js Server Base</title>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body>
+    <h1>Documentación - Express.js Server Base</h1>
+
+    <h2>Endpoints</h2>
+
+    <div class="endpoint">
+        <span class="method">POST</span> <span class="path">/register</span>
+        <div class="description">Registra un nuevo usuario.</div>
+        <button class="toggle-btn" onclick="toggleSection('register')">Mostrar/Ocultar detalles</button>
+        <div id="register" class="hidden">
+            <div class="params">
+                <h4>Parámetros:</h4>
+                <pre>
+{
+  "name": "string",
+  "email": "string",
+  "password": "string"
+}
+                </pre>
+            </div>
+            <div class="response">
+                <h4>Respuesta:</h4>
+                <pre>
+{
+  "message": "User created successfully"
+}
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="endpoint">
+        <span class="method">POST</span> <span class="path">/login</span>
+        <div class="description">Inicia sesión de un usuario.</div>
+        <button class="toggle-btn" onclick="toggleSection('login')">Mostrar/Ocultar detalles</button>
+        <div id="login" class="hidden">
+            <div class="params">
+                <h4>Parámetros:</h4>
+                <pre>
+{
+  "email": "string",
+  "password": "string"
+}
+                </pre>
+            </div>
+            <div class="response">
+                <h4>Respuesta:</h4>
+                <pre>
+{
+  "message": "Login successful",
+  "user": {
+    "id": "number",
+    "name": "string",
+    "email": "string"
+  }
+}
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="endpoint">
+        <span class="method">GET</span> <span class="path">/api/users</span>
+        <div class="description">Obtiene la lista de usuarios (sin contraseñas).</div>
+        <button class="toggle-btn" onclick="toggleSection('getUsers')">Mostrar/Ocultar detalles</button>
+        <div id="getUsers" class="hidden">
+            <div class="response">
+                <h4>Respuesta:</h4>
+                <pre>
+[
+  {
+    "name": "string",
+    "email": "string"
+  },
+  ...
+]
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="endpoint">
+        <span class="method">GET</span> <span class="path">/users/:id</span>
+        <div class="description">Obtiene información de un usuario específico.</div>
+        <button class="toggle-btn" onclick="toggleSection('getUser')">Mostrar/Ocultar detalles</button>
+        <div id="getUser" class="hidden">
+            <div class="params">
+                <h4>Parámetros:</h4>
+                <p>id: ID del usuario (en la URL)</p>
+            </div>
+            <div class="response">
+                <h4>Respuesta:</h4>
+                <pre>
+{
+  "id": "number",
+  "name": "string",
+  "email": "string"
+}
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="endpoint">
+        <span class="method">PUT</span> <span class="path">/users/:id</span>
+        <div class="description">Actualiza información de un usuario.</div>
+        <button class="toggle-btn" onclick="toggleSection('updateUser')">Mostrar/Ocultar detalles</button>
+        <div id="updateUser" class="hidden">
+            <div class="params">
+                <h4>Parámetros:</h4>
+                <p>id: ID del usuario (en la URL)</p>
+                <pre>
+{
+  "name": "string" (opcional),
+  "email": "string" (opcional),
+  "password": "string" (opcional)
+}
+                </pre>
+            </div>
+            <div class="response">
+                <h4>Respuesta:</h4>
+                <pre>
+{
+  "message": "User updated successfully",
+  "user": {
+    "id": "number",
+    "name": "string",
+    "email": "string"
+  }
+}
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="endpoint">
+        <span class="method">DELETE</span> <span class="path">/users/:id</span>
+        <div class="description">Elimina un usuario.</div>
+        <button class="toggle-btn" onclick="toggleSection('deleteUser')">Mostrar/Ocultar detalles</button>
+        <div id="deleteUser" class="hidden">
+            <div class="params">
+                <h4>Parámetros:</h4>
+                <p>id: ID del usuario (en la URL)</p>
+            </div>
+            <div class="response">
+                <h4>Respuesta:</h4>
+                <pre>
+{
+  "message": "User deleted successfully"
+}
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/index.js"></script>
+</body>
+
+</html>

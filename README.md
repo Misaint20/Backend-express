@@ -14,14 +14,18 @@ Este proyecto proporciona una base sólida para un servidor Express.js con funci
 
 ## Instalación
 1. Clona el repositorio: 
-`git clone https://github.com/Misaint20/Backend-express.git`
+```
+git clone https://github.com/Misaint20/Backend-express.git
+```
 2. Instala las dependencias:
 ```
 cd Backend-express
 npm install
 ```
 3. Inicia el servidor:
-`npm start`
+```
+npm start
+```
 
 ## Uso
 El servidor proporciona las siguientes rutas:

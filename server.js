@@ -21,6 +21,8 @@ app.use(express.urlencoded({ extended: true })); // Reemplazo de bodyParser.urle
 app.use(cors());
 // Muestreo de informacion en consola
 app.use(morgan("dev"));
+// Uso de archivos estaticos (CSS y JS)
+app.use(express.static(path.join(__dirname, 'public')));
 
 /* -- SISTEMA DE REGISTRO E INICIO DE SESIONES -- */
 
@@ -145,7 +147,7 @@ app.put("/users/:id", (req, res) => {
 
 // Ruta de inicio donde ira la documentacion
 app.get("/", (req, res) => {
-  res.send("Documentation page");
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // Ruta de usuarios API
@@ -158,7 +160,7 @@ app.get("/api/users", (req, res) => {
 
 // Ruta para mostrar la lista de usuarios
 app.get("/users", (req, res) => {
-  res.sendFile(path.join(__dirname, "public",'users', "users.html"));
+  res.sendFile(path.join(__dirname, "public", "users.html"));
 });
 
 // Ruta de usuario especifico
