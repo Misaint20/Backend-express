@@ -26,6 +26,8 @@ npm install
 ```
 npm start
 ```
+Nota: Para correr el servidor en modo de desarrollo, ejecuta `npm run dev` en lugar de `npm start`.
+Nota 2: Es necesario tener Node.js v20.0.0 o superior instalado en su sistema.
 
 ## Uso
 El servidor proporciona las siguientes rutas:

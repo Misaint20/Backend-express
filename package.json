@@ -1,4 +1,14 @@
 {
+  "name": "backend-express",
+  "version": "0.0.1",
+  "description": "",
+  "author": "Misaint20",
+  "private": false,
+  "license": "MIT",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
