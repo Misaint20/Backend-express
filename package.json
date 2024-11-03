@@ -1,19 +1,40 @@
 {
   "name": "backend-express",
-  "version": "0.0.1",
-  "description": "",
-  "author": "Misaint20",
-  "private": false,
-  "license": "MIT",
+  "version": "1.0.0",
+  "description": "Professional Express.js Backend",
+  "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "cross-env NODE_ENV=test jest --detectOpenHandles --forceExit",
+    "test:watch": "NODE_ENV=test jest --watch"
   },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "setupFilesAfterEnv": [
+      "./tests/setup.js"
+    ]
+  },
+  "author": "Misaint20",
+  "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^5.0.1",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "supertest": "^7.0.0",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0"
   }
 }

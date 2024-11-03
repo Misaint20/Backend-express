@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const authRoutes = require('./auth');
-const userRoutes = require('./users');
+const authRoutes = require('./v1/auth.routes');
+const userRoutes = require('./v1/user.routes');
 
-// Configurar rutas
-router.use('/', authRoutes);
+router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 
 module.exports = router;
