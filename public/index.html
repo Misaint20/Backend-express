@@ -1,169 +1,107 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentación - Express.js Server Base</title>
+    <title>Express.js Server Base API Documentation</title>
     <link rel="stylesheet" href="/css/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 </head>
-
 <body>
-    <h1>Documentación - Express.js Server Base</h1>
-
-    <h2>Endpoints</h2>
-
-    <div class="endpoint">
-        <span class="method">POST</span> <span class="path">/register</span>
-        <div class="description">Registra un nuevo usuario.</div>
-        <button class="toggle-btn" onclick="toggleSection('register')">Mostrar/Ocultar detalles</button>
-        <div id="register" class="hidden">
-            <div class="params">
-                <h4>Parámetros:</h4>
-                <pre>
-{
-  "name": "string",
-  "email": "string",
-  "password": "string"
-}
-                </pre>
+    <div class="container">
+        <h1>Express.js Server Base API Documentation</h1>
+        
+        <section id="auth-endpoints" class="endpoint-section">
+            <h2>
+                <span class="section-icon"><i class="fas fa-lock"></i></span>
+                Authentication Endpoints
+                <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+            </h2>
+            <div class="endpoint-list">
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <h3><span class="method post">POST</span> /api/v1/auth/register</h3>
+                        <button class="copy-btn" data-clipboard-text="/api/v1/auth/register">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p>Register a new user</p>
+                    <p><strong>Body:</strong></p>
+                    <pre><code>{ "name": "string", "email": "string", "password": "string" }</code></pre>
+                </div>
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <h3><span class="method post">POST</span> /api/v1/auth/login</h3>
+                        <button class="copy-btn" data-clipboard-text="/api/v1/auth/login">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p>Login an existing user</p>
+                    <p><strong>Body:</strong></p>
+                    <pre><code>{ "email": "string", "password": "string" }</code></pre>
+                </div>
             </div>
-            <div class="response">
-                <h4>Respuesta:</h4>
-                <pre>
-{
-  "message": "User created successfully"
-}
-                </pre>
+        </section>
+
+        <section id="user-endpoints" class="endpoint-section">
+            <h2>
+                <span class="section-icon"><i class="fas fa-users"></i></span>
+                User Endpoints
+                <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+            </h2>
+            <div class="endpoint-list">
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <h3><span class="method get">GET</span> /api/v1/users</h3>
+                        <button class="copy-btn" data-clipboard-text="/api/v1/users">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p>Get all users (requires authentication)</p>
+                </div>
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <h3><span class="method get">GET</span> /api/v1/users/:id</h3>
+                        <button class="copy-btn" data-clipboard-text="/api/v1/users/:id">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p>Get a specific user by ID (requires authentication)</p>
+                </div>
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <h3><span class="method put">PUT</span> /api/v1/users/:id</h3>
+                        <button class="copy-btn" data-clipboard-text="/api/v1/users/:id">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p>Update a user (requires authentication)</p>
+                    <p><strong>Body:</strong></p>
+                    <pre><code>{ "name": "string", "email": "string" }</code></pre>
+                </div>
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <h3><span class="method delete">DELETE</span> /api/v1/users/:id</h3>
+                        <button class="copy-btn" data-clipboard-text="/api/v1/users/:id">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p>Delete a user (requires authentication)</p>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <section id="additional-info">
+            <h2>
+                <span class="section-icon"><i class="fas fa-info-circle"></i></span>
+                Additional Information
+            </h2>
+            <p>All authenticated routes require a valid JWT token in the Authorization header.</p>
+            <p>Example: <code>Authorization: Bearer your_jwt_token_here</code></p>
+        </section>
     </div>
 
-    <div class="endpoint">
-        <span class="method">POST</span> <span class="path">/login</span>
-        <div class="description">Inicia sesión de un usuario.</div>
-        <button class="toggle-btn" onclick="toggleSection('login')">Mostrar/Ocultar detalles</button>
-        <div id="login" class="hidden">
-            <div class="params">
-                <h4>Parámetros:</h4>
-                <pre>
-{
-  "email": "string",
-  "password": "string"
-}
-                </pre>
-            </div>
-            <div class="response">
-                <h4>Respuesta:</h4>
-                <pre>
-{
-  "message": "Login successful",
-  "user": {
-    "id": "number",
-    "name": "string",
-    "email": "string"
-  }
-}
-                </pre>
-            </div>
-        </div>
-    </div>
-
-    <div class="endpoint">
-        <span class="method">GET</span> <span class="path">/api/users</span>
-        <div class="description">Obtiene la lista de usuarios (sin contraseñas).</div>
-        <button class="toggle-btn" onclick="toggleSection('getUsers')">Mostrar/Ocultar detalles</button>
-        <div id="getUsers" class="hidden">
-            <div class="response">
-                <h4>Respuesta:</h4>
-                <pre>
-[
-  {
-    "name": "string",
-    "email": "string"
-  },
-  ...
-]
-                </pre>
-            </div>
-        </div>
-    </div>
-
-    <div class="endpoint">
-        <span class="method">GET</span> <span class="path">/users/:id</span>
-        <div class="description">Obtiene información de un usuario específico.</div>
-        <button class="toggle-btn" onclick="toggleSection('getUser')">Mostrar/Ocultar detalles</button>
-        <div id="getUser" class="hidden">
-            <div class="params">
-                <h4>Parámetros:</h4>
-                <p>id: ID del usuario (en la URL)</p>
-            </div>
-            <div class="response">
-                <h4>Respuesta:</h4>
-                <pre>
-{
-  "id": "number",
-  "name": "string",
-  "email": "string"
-}
-                </pre>
-            </div>
-        </div>
-    </div>
-
-    <div class="endpoint">
-        <span class="method">PUT</span> <span class="path">/users/:id</span>
-        <div class="description">Actualiza información de un usuario.</div>
-        <button class="toggle-btn" onclick="toggleSection('updateUser')">Mostrar/Ocultar detalles</button>
-        <div id="updateUser" class="hidden">
-            <div class="params">
-                <h4>Parámetros:</h4>
-                <p>id: ID del usuario (en la URL)</p>
-                <pre>
-{
-  "name": "string" (opcional),
-  "email": "string" (opcional),
-  "password": "string" (opcional)
-}
-                </pre>
-            </div>
-            <div class="response">
-                <h4>Respuesta:</h4>
-                <pre>
-{
-  "message": "User updated successfully",
-  "user": {
-    "id": "number",
-    "name": "string",
-    "email": "string"
-  }
-}
-                </pre>
-            </div>
-        </div>
-    </div>
-
-    <div class="endpoint">
-        <span class="method">DELETE</span> <span class="path">/users/:id</span>
-        <div class="description">Elimina un usuario.</div>
-        <button class="toggle-btn" onclick="toggleSection('deleteUser')">Mostrar/Ocultar detalles</button>
-        <div id="deleteUser" class="hidden">
-            <div class="params">
-                <h4>Parámetros:</h4>
-                <p>id: ID del usuario (en la URL)</p>
-            </div>
-            <div class="response">
-                <h4>Respuesta:</h4>
-                <pre>
-{
-  "message": "User deleted successfully"
-}
-                </pre>
-            </div>
-        </div>
-    </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
     <script src="/js/index.js"></script>
 </body>
-
 </html>

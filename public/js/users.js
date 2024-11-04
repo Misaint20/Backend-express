@@ -1,5 +1,5 @@
 // Fetch para obtener los usuarios desde la API
-fetch('/users/api')
+fetch('/api/v1/users')
 .then(response => response.json())
 .then(users => {
   const userList = document.getElementById('user-list');
