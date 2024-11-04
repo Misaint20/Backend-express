@@ -7,6 +7,7 @@ Nota: Esta es parte de una prueba de la ultima actualizacion de express.js para 
 const express = require('express');
 const { setupMiddlewares } = require('./config/app.config');
 const routes = require('./routes');
+const updateRepoStructure = require('./utils/repoStructure');
 
 const app = express();
 
@@ -16,8 +17,9 @@ app.use('/api/v1', routes);
 
 if (process.env.NODE_ENV !== 'test') {
     const port = process.env.PORT || 3000;
-    app.listen(port, () => {
+    app.listen(port, async () => {
         console.log(`Server running on http://localhost:${port}`);
+        await updateRepoStructure();
     });
 }
 
