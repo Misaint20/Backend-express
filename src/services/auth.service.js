@@ -5,32 +5,48 @@ const UserService = require('./user.service');
 
 class AuthService {
     static async register(userData) {
-        const existingUser = await UserService.findUserByEmail(userData.email);
-        if (existingUser) {
-            throw new Error('User already exists');
+        try {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(userData.password, salt);
+
+            const newUser = await UserService.createUser({
+                ...userData,
+                password: hashedPassword
+            });
+
+            const token = jwt.sign({ id: newUser.id }, jwtSecret, { expiresIn: jwtExpiration });
+            
+            return {
+                token,
+                user: newUser
+            };
+        } catch (error) {
+            throw new Error(error.message || 'Error during registration');
         }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(userData.password, salt);
-
-        const newUser = await UserService.createUser({ ...userData, password: hashedPassword });
-        const token = jwt.sign({ id: newUser.id }, jwtSecret, { expiresIn: jwtExpiration });
-        return { token, user: newUser };
     }
 
-    static async login(userData) {
-        const user = await UserService.findUserByEmail(userData.email);
-        if (!user) {
-            throw new Error('User not found');
-        }
+    static async login(credentials) {
+        try {
+            const user = await UserService.findUserByEmail(credentials.email);
+            if (!user) {
+                throw new Error('Invalid credentials');
+            }
 
-        const isMatch = await bcrypt.compare(userData.password, user.password);
-        if (!isMatch) {
-            throw new Error('Invalid password');
-        }
+            const isValidPassword = await bcrypt.compare(credentials.password, user.password);
+            if (!isValidPassword) {
+                throw new Error('Invalid credentials');
+            }
 
-        const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: jwtExpiration });
-        return { token, user };
+            const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: jwtExpiration });
+            
+            const { password, ...userWithoutPassword } = user;
+            return {
+                token,
+                user: userWithoutPassword
+            };
+        } catch (error) {
+            throw new Error(error.message || 'Error during login');
+        }
     }
 }
 

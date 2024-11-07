@@ -1,74 +1,99 @@
 const request = require('supertest');
 const app = require('../src/server');
 const { usersUtil } = require('../src/config/app.config');
+const fs = require('fs');
+const path = require('path');
 
 describe('User API', () => {
     let server;
-    let testUser;
+    let authToken;
+    let testUserId;
 
-    beforeAll(() => {
+    beforeAll(async () => {
         server = app.listen(4001);
         
-        // Crear usuario de prueba
-        testUser = {
-            id: 1,
-            name: 'Test User',
-            email: 'test@example.com',
-            password: '$2a$10$testHashedPassword'
-        };
-        
-        // Guardar usuario de prueba
-        usersUtil.writeUsers([testUser]);
-    });
+        // Limpiar archivo de test si existe
+        try {
+            fs.unlinkSync(usersUtil.USERS_FILE);
+        } catch (err) {
+            // Ignorar si el archivo no existe
+        }
 
-    afterAll((done) => {
-        // Limpiar usuarios de prueba
-        usersUtil.writeUsers([]);
-        server.close(done);
-    });
-
-    it('should get all users', async () => {
+        // Registrar un usuario de prueba
         const response = await request(server)
-            .get('/api/v1/users');
-
-        expect(response.status).toBe(200);
-        expect(response.body).toBeInstanceOf(Array);
-        expect(response.body.length).toBe(1);
-    });
-
-    it('should get a user by ID', async () => {
-        const response = await request(server)
-            .get('/api/v1/users/1');
-
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('id', 1);
-        expect(response.body).toHaveProperty('name', 'Test User');
-        expect(response.body).toHaveProperty('email', 'test@example.com');
-    });
-
-    it('should update a user', async () => {
-        const response = await request(server)
-            .put('/api/v1/users/1')
+            .post('/api/v1/auth/register')
             .send({
-                name: 'Jane Doe',
-                email: 'janedoe@example.com',
+                name: 'Test User',
+                email: 'test@example.com',
+                password: 'password123'
             });
 
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('id', 1);
-        expect(response.body).toHaveProperty('name', 'Jane Doe');
-        expect(response.body).toHaveProperty('email', 'janedoe@example.com');
+        authToken = response.body.token;
+        testUserId = response.body.user.id;
     });
 
-    it('should delete a user', async () => {
-        const response = await request(server)
-            .delete('/api/v1/users/1');
-
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('message', 'User deleted successfully');
+    afterAll(async () => {
+        // Limpiar archivo de test
+        try {
+            fs.unlinkSync(usersUtil.USERS_FILE);
+        } catch (err) {
+            // Ignorar si el archivo no existe
+        }
         
-        // Verificar que el usuario fue eliminado
-        const users = usersUtil.readUsers();
-        expect(users.length).toBe(0);
+        await new Promise(resolve => server.close(resolve));
+    });
+
+    describe('GET /users', () => {
+        it('should get all users', async () => {
+            const response = await request(server)
+                .get('/api/v1/users')
+                .set('Authorization', `Bearer ${authToken}`);
+
+            expect(response.status).toBe(200);
+            expect(Array.isArray(response.body)).toBe(true);
+            expect(response.body.length).toBeGreaterThan(0);
+            expect(response.body[0]).not.toHaveProperty('password');
+        });
+    });
+
+    describe('GET /users/:id', () => {
+        it('should get user by ID', async () => {
+            const response = await request(server)
+                .get(`/api/v1/users/${testUserId}`)
+                .set('Authorization', `Bearer ${authToken}`);
+
+            expect(response.status).toBe(200);
+            expect(response.body).toHaveProperty('id', testUserId);
+            expect(response.body).toHaveProperty('email', 'test@example.com');
+            expect(response.body).not.toHaveProperty('password');
+        });
+    });
+
+    describe('PUT /users/:id', () => {
+        it('should update user', async () => {
+            const response = await request(server)
+                .put(`/api/v1/users/${testUserId}`)
+                .set('Authorization', `Bearer ${authToken}`)
+                .send({
+                    name: 'Updated Name',
+                    email: 'updated@example.com'
+                });
+
+            expect(response. status).toBe(200);
+            expect(response.body).toHaveProperty('id', testUserId);
+            expect(response.body).toHaveProperty('email', 'updated@example.com');
+            expect(response.body).not.toHaveProperty('password');
+        });
+    });
+
+    describe('DELETE /users/:id', () => {
+        it('should delete user', async () => {
+            const response = await request(server)
+                .delete(`/api/v1/users/${testUserId}`)
+                .set('Authorization', `Bearer ${authToken}`);
+    
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual({ message: 'User deleted successfully' });
+        });
     });
 });

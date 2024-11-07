@@ -1,6 +1,8 @@
 const { usersUtil } = require('../config/app.config');
 
+// Controlador de usuarios
 const UserController = {
+    //Metodo para cargar todos los usuarios
     getAllUsers: (req, res) => {
         try {
             const users = usersUtil.readUsers();
@@ -11,6 +13,7 @@ const UserController = {
         }
     },
 
+    //Metodo para obtener un usuario por ID
     getUserById: (req, res) => {
         try {
             const users = usersUtil.readUsers();
@@ -27,6 +30,7 @@ const UserController = {
         }
     },
 
+    // Metodo para actualizar un usuario
     updateUser: (req, res) => {
         try {
             const users = usersUtil.readUsers();
@@ -50,6 +54,7 @@ const UserController = {
         }
     },
 
+    // Metodo para eliminar un usuario
     deleteUser: (req, res) => {
         try {
             const users = usersUtil.readUsers();

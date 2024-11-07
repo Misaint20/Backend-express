@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { jwtSecret } = require('../config/auth.config');
 
+// Middleware para verificar el token de autenticación
 const verifyToken = (req, res, next) => {
     const token = req.headers['x-access-token'] || req.headers['authorization'];
 

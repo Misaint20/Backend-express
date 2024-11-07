@@ -1,3 +1,4 @@
+// Script para actualizar la estructura del repositorio
 const fs = require('fs/promises');
 const path = require('node:path');
 
