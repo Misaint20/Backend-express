@@ -1,3 +1,4 @@
+// Configuracion de la aplicación
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -20,10 +21,13 @@ const setupMiddlewares = (app) => {
     app.use(cors());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
+    // Logs de desarrollo en consola
     app.use(morgan('dev', { stream: { write: message => logger.info(message.trim()) } }));
+    // Carga de  archivos estáticos
     app.use(express.static(path.join(__dirname, '../../public')));
 };
 
+// Utilidades de usuarios
 const usersUtil = {
     USERS_FILE: process.env.NODE_ENV === 'test' 
         ? path.join(__dirname, '..', '..', 'data', 'test-users.json')
@@ -39,6 +43,7 @@ const usersUtil = {
     
     writeUsers: (users) => {
         fs.writeFileSync(usersUtil.USERS_FILE, JSON.stringify(users, null, 2));
+        console.log(`Users written to ${usersUtil.USERS_FILE}`);
     }
 };
 

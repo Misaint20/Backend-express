@@ -1,67 +1,94 @@
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
-
-const USERS_FILE = path.join(__dirname, '..', '..', 'data', 'users.json');
-
-const readUsers = () => {
-    try {
-        return JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
-    } catch (err) {
-        return [];
-    }
-};
-
-const writeUsers = (users) => {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-};
+const { usersUtil } = require('../config/app.config');
 
 class UserService {
     static async getAllUsers() {
-        return readUsers();
+        return usersUtil.readUsers();
     }
 
     static async getUserById(id) {
-        const users = readUsers();
-        return users.find(u => u.id === id);
+        const users = await this.getAllUsers();
+        return users.find(u => u.id === parseInt(id));
     }
 
     static async findUserByEmail(email) {
-        const users = readUsers();
-        return users.find(u => u.email === email);
+        const users = await this.getAllUsers();
+        return users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    }
+
+    static async getNextId() {
+        const users = await this.getAllUsers();
+        return users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
     }
 
     static async createUser(userData) {
-        const users = readUsers();
+        const users = await this.getAllUsers();
+        
+        // Verificar si el email ya existe
+        const existingUser = await this.findUserByEmail(userData.email);
+        if (existingUser) {
+            throw new Error('Email already exists');
+        }
+
         const newUser = {
-            id: users.length + 1,
-            ...userData
+            id: await this.getNextId(),
+            ...userData,
+            email: userData.email.toLowerCase(),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
         };
+
         users.push(newUser);
-        writeUsers(users);
-        return newUser;
+        usersUtil.writeUsers(users);
+        
+        // Retornar usuario sin password
+        const { password, ...userWithoutPassword } = newUser;
+        return userWithoutPassword;
     }
 
     static async updateUser(id, userData) {
-        const users = readUsers();
-        const index = users.findIndex(u => u.id === id);
+        const users = await this.getAllUsers();
+        const index = users.findIndex(u => u.id === parseInt(id));
         if (index === -1) return null;
 
-        if (userData.password) {
-            const salt = bcrypt.genSaltSync(10);
-            userData.password = bcrypt.hashSync(userData.password, salt);
+        // Si se actualiza el email, verificar que no exista
+        if (userData.email) {
+            const existingUser = await this.findUserByEmail(userData.email);
+            if (existingUser && existingUser.id !== parseInt(id)) {
+                throw new Error('Email already exists');
+            }
+            userData.email = userData.email.toLowerCase();
         }
 
-        users[index] = { ...users[index], ...userData };
-        writeUsers(users);
-        return users[index];
+        if (userData.password) {
+            const salt = await bcrypt.genSalt(10);
+            userData.password = await bcrypt.hash(userData.password, salt);
+        }
+
+        users[index] = {
+            ...users[index],
+            ...userData,
+            updatedAt: new Date().toISOString()
+        };
+
+        usersUtil.writeUsers(users);
+        
+        // Retornar usuario sin password
+        const { password, ...userWithoutPassword } = users[index];
+        return userWithoutPassword;
     }
 
     static async deleteUser(id) {
-        const users = readUsers();
-        const newUsers = users.filter(u => u.id !== id);
-        if (users.length === newUsers.length) return false;
-        writeUsers(newUsers);
+        const users = await this.getAllUsers();
+        const filteredUsers = users.filter(u => u.id !== parseInt(id));
+        
+        if (users.length === filteredUsers.length) {
+            return false;
+        }
+        
+        usersUtil.writeUsers(filteredUsers);
         return true;
     }
 }
